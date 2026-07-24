@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <UserSecretsId>shellui-docs</UserSecretsId>
+    <RootNamespace>ShellUI.Docs</RootNamespace>
+  </PropertyGroup>
+
+  <!-- ShellDocs framework. Sibling repo on disk (docs/shelldocs/shelldocs/).
+       Swap to <PackageReference Include="ShellDocs.Components" Version="..." />
+       the moment 0.2.0-alpha lands on NuGet. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\docs\shelldocs\shelldocs\src\ShellDocs.Core\ShellDocs.Core.csproj" />
+    <ProjectReference Include="..\..\..\docs\shelldocs\shelldocs\src\ShellDocs.Markdown\ShellDocs.Markdown.csproj" />
+    <ProjectReference Include="..\..\..\docs\shelldocs\shelldocs\src\ShellDocs.Tokens\ShellDocs.Tokens.csproj" />
+    <ProjectReference Include="..\..\..\docs\shelldocs\shelldocs\src\ShellDocs.Components\ShellDocs.Components.csproj" />
+  </ItemGroup>
+
+  <!-- ShellUI itself — the subject of these docs. Assembly-scanned at startup
+       so every component (Button, Alert, Command, …) is markdown-authorable. -->
+  <ItemGroup>
+    <ProjectReference Include="..\ShellUI.Components\ShellUI.Components.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="content/**/*.md;content/**/meta.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Sync the root-level images/ folder into wwwroot/images/ before build.
+       Source of truth stays at shellui/images/ — this target keeps
+       wwwroot/images/ in lockstep so Blazor's static-web-assets picks the
+       logos up under /images/*.png at runtime. Cheaper than Content <Link>
+       here because the static-web-assets pipeline only registers files that
+       physically live under wwwroot/. -->
+  <Target Name="SyncBrandLogos" BeforeTargets="AssignTargetPaths;Build">
+    <ItemGroup>
+      <_BrandLogo Include="..\..\images\*.png" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_BrandLogo)"
+          DestinationFolder="$(MSBuildThisFileDirectory)wwwroot\images\"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

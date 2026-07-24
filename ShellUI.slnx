@@ -8,10 +8,15 @@
     <Project Path="src/ShellUI.CLI/ShellUI.CLI.csproj" />
     <Project Path="src/ShellUI.Components/ShellUI.Components.csproj" />
     <Project Path="src/ShellUI.Core/ShellUI.Core.csproj" />
+    <Project Path="src/ShellUI.Docs/ShellUI.Docs.csproj" />
     <Project Path="src/ShellUI.Templates/ShellUI.Templates.csproj" />
   </Folder>
   <Folder Name="/tools/">
     <Project Path="tools/ShellUI.SafelistGenerator/ShellUI.SafelistGenerator.csproj" />
   </Folder>
+  <Project Path="../docs/shelldocs/shelldocs/src/ShellDocs.Components/ShellDocs.Components.csproj" />
+  <Project Path="../docs/shelldocs/shelldocs/src/ShellDocs.Core/ShellDocs.Core.csproj" />
+  <Project Path="../docs/shelldocs/shelldocs/src/ShellDocs.Markdown/ShellDocs.Markdown.csproj" />
+  <Project Path="../docs/shelldocs/shelldocs/src/ShellDocs.Tokens/ShellDocs.Tokens.csproj" />
   <Project Path="ShellUI.Tests/ShellUI.Tests.csproj" />
 </Solution>
