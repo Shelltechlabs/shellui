@@ -1,0 +1,46 @@
+@page "/"
+@layout HomeLayout
+
+<PageTitle>ShellUI — shadcn-flavoured Blazor components</PageTitle>
+
+@* Placeholder landing until the content branch adds a real hero. Keeps the
+   scaffold branch focused on wiring; a proper home page ships in
+   content/intro-and-3-proof-components. *@
+<div class="scaffold-home">
+    <h1>ShellUI</h1>
+    <p class="tagline">shadcn-flavoured Blazor components — the CLI-first component library.</p>
+    <p>
+        <a class="home-cta" href="/docs/introduction">Read the docs</a>
+    </p>
+</div>
+
+<style>
+    .scaffold-home {
+        max-width: 40rem;
+        margin: 6rem auto;
+        padding: 0 1.5rem;
+        text-align: center;
+    }
+    .scaffold-home h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        margin: 0 0 0.75rem;
+    }
+    .scaffold-home .tagline {
+        color: var(--muted-foreground);
+        font-size: 1.1rem;
+        margin: 0 0 2rem;
+    }
+    .home-cta {
+        display: inline-block;
+        padding: 0.6rem 1.25rem;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        border-radius: 9999px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background 150ms;
+    }
+    .home-cta:hover { background: color-mix(in oklch, var(--primary) 88%, transparent); }
+</style>

@@ -1,0 +1,49 @@
+@using ShellUI.Docs.Components
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShellUI — shadcn-flavoured Blazor components</title>
+    <base href="/" />
+
+    @* Cascade order matters — later files override earlier ones:
+       1. ShellDocs.Tokens  — neutral token baseline (--foreground, --card, …)
+       2. ShellDocs theme   — docs-chrome-specific extensions
+       3. ShellUI theme     — brand palette; overrides tokens where they collide
+       4. ShellUI utilities — compiled Tailwind classes used by ShellUI components
+       5. Site styles       — this project's own overrides *@
+    <link rel="stylesheet" href="_content/ShellDocs.Tokens/tokens.css" />
+    <link rel="stylesheet" href="_content/ShellDocs.Components/shelldocs-theme.css" />
+    <link rel="stylesheet" href="_content/ShellUI.Components/shellui-theme.css" />
+    <link rel="stylesheet" href="_content/ShellUI.Components/shellui-all.css" />
+    <link rel="stylesheet" href="site.css" />
+    <link rel="stylesheet" href="ShellUI.Docs.styles.css" />
+
+    <script>
+        (function () {
+            var q = new URLSearchParams(location.search).get('theme');
+            var saved = null;
+            try { saved = localStorage.getItem('shelldocs-theme'); } catch (e) {}
+            var systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var mode = q || saved || (systemDark ? 'dark' : 'light');
+            if (mode === 'dark') document.documentElement.classList.add('dark');
+        })();
+    </script>
+    <HeadOutlet @rendermode="RenderMode.InteractiveServer" />
+</head>
+<body>
+    <Routes @rendermode="RenderMode.InteractiveServer" />
+    <script src="_content/ShellDocs.Components/shelldocs.js"></script>
+    <script src="_content/ShellUI.Components/shellui.js"></script>
+    <script type="module">
+        import { createHighlighter } from 'https://esm.sh/shiki@1.24.0';
+        window.__shiki = await createHighlighter({
+            themes: ['github-light', 'github-dark'],
+            langs: ['razor', 'csharp', 'html', 'json', 'yaml', 'bash', 'typescript', 'javascript', 'markdown']
+        });
+        if (window.shelldocsHighlight) window.shelldocsHighlight();
+    </script>
+    <script src="_framework/blazor.web.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+@page "/docs/{*Path:nonfile}"
+@layout DocsLayout
+@using Microsoft.AspNetCore.Components.Sections
+@inject NavigationGraph Graph
+@inject MarkdownRenderer Renderer
+
+<PageTitle>@_title</PageTitle>
+
+@if (_document is not null)
+{
+    <MarkdownContent Document="_document" />
+    <PrevNextNav Prev="_prev" Next="_next" />
+
+    <SectionContent SectionName="docs-toc">
+        <TableOfContents Headings="_document.Headings" />
+    </SectionContent>
+}
+else
+{
+    <div class="doc-not-found">
+        <h1>Page not found</h1>
+        <p>The page <code>@Path</code> doesn't exist yet.</p>
+        <p><a href="/docs/introduction">Back to introduction</a></p>
+    </div>
+}
+
+<style>
+    .doc-not-found { padding: 3rem 0; }
+    .doc-not-found h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.5rem; }
+    .doc-not-found code {
+        background: var(--muted); padding: 0.125rem 0.375rem; border-radius: 4px;
+        font-family: var(--font-mono); font-size: 0.875em; border: 1px solid var(--border);
+    }
+</style>
+
+@code {
+    [Parameter] public string? Path { get; set; }
+
+    private RenderedDocument? _document;
+    private string _title = "";
+    private NavigationNode? _prev;
+    private NavigationNode? _next;
+
+    protected override void OnParametersSet()
+    {
+        var url = "/docs" + (string.IsNullOrEmpty(Path) ? "" : "/" + Path);
+        var node = Graph.ResolveByUrl(url);
+        if (node?.Path is not null && System.IO.File.Exists(node.Path))
+        {
+            _document = Renderer.RenderFile(node.Path);
+            _title = node.Title + " — ShellUI";
+            (_prev, _next) = Graph.GetPrevNext(node);
+        }
+        else
+        {
+            _document = null;
+            _title = "Not found — ShellUI";
+            _prev = null;
+            _next = null;
+        }
+    }
+}
