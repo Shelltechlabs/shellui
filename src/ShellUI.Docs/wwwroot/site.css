@@ -1,0 +1,38 @@
+/* Site-level overrides for ShellUI.Docs.
+   Loads LAST in the App.razor cascade so anything here wins over
+   ShellDocs and ShellUI theme files. */
+
+/* ShellUI's shellui-theme.css declares `--font-sans: Geist, sans-serif;` but
+   never ships or imports the Geist webfont, so the browser falls through to
+   `sans-serif` (system default). ShellDocs' tokens.css already loads Inter,
+   so we restore its declaration here — after ShellUI's cascade — so the whole
+   docs site inherits the same Inter aesthetic as shelldocs.dev. Same for the
+   mono stack. */
+:root {
+    --font-sans: 'Inter var', 'Inter', ui-sans-serif, system-ui, -apple-system,
+                 BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+}
+
+body {
+    font-family: var(--font-sans);
+}
+
+/* Brand logo — ShellDocs' DocsSidebarHeader and DocsHeader render an empty
+   .docs-*-logo-dot placeholder (a solid rounded square). Swap it for our
+   actual logo via background-image. `!important` is required because the
+   original declarations live in Blazor scoped CSS (`.foo[b-xyz]`) whose
+   attribute-selector specificity beats a plain class selector loaded later.
+   Light/dark variants toggle off the `:root.dark` class the theme script
+   stamps in App.razor. */
+.docs-sidebar-logo-dot,
+.docs-header-logo-dot {
+    width: 1.375rem !important;
+    height: 1.375rem !important;
+    border-radius: 0 !important;
+    background: url('/images/Shellui-light.png') center/contain no-repeat !important;
+}
+:root.dark .docs-sidebar-logo-dot,
+:root.dark .docs-header-logo-dot {
+    background-image: url('/images/Shellui-dark.png') !important;
+}
