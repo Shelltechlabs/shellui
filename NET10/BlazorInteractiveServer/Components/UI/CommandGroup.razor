@@ -1,0 +1,18 @@
+@namespace BlazorInteractiveServer.Components.UI
+
+<div class="@Shell.Cn("overflow-hidden p-1 text-foreground", Class)" @attributes="AdditionalAttributes">
+    @if (!string.IsNullOrEmpty(Heading))
+    {
+        <div class="px-2 py-1.5 text-xs font-medium text-muted-foreground">@Heading</div>
+    }
+    @ChildContent
+</div>
+
+@code {
+    [CascadingParameter] private Command? Parent { get; set; }
+    [Parameter] public string? Heading { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+}

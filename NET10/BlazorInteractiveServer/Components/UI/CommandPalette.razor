@@ -11,8 +11,8 @@
          Placeholder="@Placeholder" />
 
 @code {
-    [Parameter] public List<CommandItem> Commands { get; set; } = new();
-    [Parameter] public EventCallback<CommandItem> CommandSelected { get; set; }
+    [Parameter] public List<Models.CommandItem> Commands { get; set; } = new();
+    [Parameter] public EventCallback<Models.CommandItem> CommandSelected { get; set; }
     [Parameter] public string Placeholder { get; set; } = "Type a command or search...";
 
     [Parameter] public string HotkeyChar { get; set; } = "k";
@@ -50,7 +50,7 @@
         return Task.CompletedTask;
     }
 
-    private async Task OnCommandSelected(CommandItem item)
+    private async Task OnCommandSelected(Models.CommandItem item)
     {
         await CommandSelected.InvokeAsync(item);
     }

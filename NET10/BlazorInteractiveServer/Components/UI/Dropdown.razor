@@ -39,12 +39,14 @@
     {
         IsOpen = !IsOpen;
         await IsOpenChanged.InvokeAsync(IsOpen);
+        StateHasChanged();
     }
 
     public async Task CloseAsync()
     {
         IsOpen = false;
         await IsOpenChanged.InvokeAsync(IsOpen);
+        StateHasChanged();
     }
 
     private async Task ToggleOpen()

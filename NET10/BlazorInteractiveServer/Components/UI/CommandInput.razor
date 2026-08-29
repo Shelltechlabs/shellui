@@ -1,0 +1,42 @@
+@namespace BlazorInteractiveServer.Components.UI
+
+<div class="flex items-center border-b border-border px-3" cmdk-input-wrapper="">
+    <svg class="mr-2 h-4 w-4 shrink-0 opacity-50" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+    <input @ref="_input"
+           type="text"
+           value="@_value"
+           @oninput="OnInput"
+           placeholder="@Placeholder"
+           class="@Shell.Cn("flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50", Class)"
+           @attributes="AdditionalAttributes" />
+</div>
+
+@code {
+    [CascadingParameter] private Command? Parent { get; set; }
+    [Parameter] public string Placeholder { get; set; } = "Type a command or search...";
+    [Parameter] public bool AutoFocus { get; set; } = true;
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private ElementReference _input;
+    private string _value = "";
+    private bool _focused;
+
+    private void OnInput(ChangeEventArgs e)
+    {
+        _value = e.Value?.ToString() ?? "";
+        Parent?.SetFilter(_value);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && AutoFocus && !_focused)
+        {
+            _focused = true;
+            try { await _input.FocusAsync(); } catch { }
+        }
+    }
+}
