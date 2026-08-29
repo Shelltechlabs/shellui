@@ -145,51 +145,51 @@
     private bool _isMobileMenuOpen = false;
     private bool _isCommandPaletteOpen = false;
     
-    private List<CommandItem> _commandItems = new();
+    private List<Models.CommandItem> _commandItems = new();
 
     protected override void OnInitialized()
     {
-        _commandItems = new List<CommandItem>
+        _commandItems = new List<Models.CommandItem>
         {
-            new CommandItem 
+            new Models.CommandItem
             { 
                 Title = "Home", 
                 Description = "Go to homepage",
                 Shortcut = "Ctrl+H",
                 Action = async () => { NavigationManager.NavigateTo("/"); await Task.CompletedTask; }
             },
-            new CommandItem 
+            new Models.CommandItem
             { 
                 Title = "Dashboard", 
                 Description = "View dashboard",
                 Shortcut = "Ctrl+D",
                 Action = async () => { NavigationManager.NavigateTo("/dashboard"); await Task.CompletedTask; }
             },
-            new CommandItem 
+            new Models.CommandItem
             { 
                 Title = "Documentation", 
                 Description = "View ShellUI documentation",
                 Action = async () => { NavigationManager.NavigateTo("/docs"); await Task.CompletedTask; }
             },
-            new CommandItem 
+            new Models.CommandItem
             { 
                 Title = "Blog", 
                 Description = "Read our latest blog posts",
                 Action = async () => { NavigationManager.NavigateTo("/blog"); await Task.CompletedTask; }
             },
-            new CommandItem 
+            new Models.CommandItem
             { 
                 Title = "Showcase", 
                 Description = "See ShellUI in action",
                 Action = async () => { NavigationManager.NavigateTo("/showcase"); await Task.CompletedTask; }
             },
-            new CommandItem 
+            new Models.CommandItem
             { 
                 Title = "Sponsors", 
                 Description = "Support ShellUI development",
                 Action = async () => { NavigationManager.NavigateTo("/sponsors"); await Task.CompletedTask; }
             },
-            new CommandItem 
+            new Models.CommandItem
             { 
                 Title = "GitHub", 
                 Description = "View source code on GitHub",
@@ -218,7 +218,7 @@
         _isCommandPaletteOpen = isOpen;
     }
 
-    private async Task HandleCommandSelected(CommandItem command)
+    private async Task HandleCommandSelected(Models.CommandItem command)
     {
         _isCommandPaletteOpen = false;
         if (command.Action != null)
