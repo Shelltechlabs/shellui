@@ -153,14 +153,14 @@ public static class DataTableTemplate
                 <div class=""flex items-center space-x-2"">
                     <p class=""text-sm font-medium text-foreground whitespace-nowrap"">Rows per page</p>
                     <div class=""relative"">
-                        <select value=""@_pageSize.ToString()"" @onchange=""@((e) => OnPageSizeChanged(e))"" class=""flex h-8 w-[70px] appearance-none rounded-md border border-input bg-background px-3 py-2 pr-6 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"">
+                        <select value=""@_pageSize.ToString()"" @onchange=""@((e) => OnPageSizeChanged(e))"" class=""flex h-8 w-[70px] items-center appearance-none rounded-md border border-input bg-background pl-3 pr-8 text-sm leading-none text-center ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"">
                             @foreach (var size in new[] { 5, 10, 20, 50 })
                             {
                                 <option value=""@size.ToString()"">@size</option>
                             }
                         </select>
-                        <div class=""absolute inset-y-0 right-1 flex items-center pointer-events-none"">
-                            <svg class=""h-3 w-3 text-foreground/70"" xmlns=""http://www.w3.org/2000/svg"" fill=""none"" viewBox=""0 0 24 24"" stroke=""currentColor"">
+                        <div class=""pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"">
+                            <svg class=""h-4 w-4 opacity-50"" xmlns=""http://www.w3.org/2000/svg"" fill=""none"" viewBox=""0 0 24 24"" stroke=""currentColor"">
                                 <path stroke-linecap=""round"" stroke-linejoin=""round"" stroke-width=""2"" d=""M19 9l-7 7-7-7"" />
                             </svg>
                         </div>

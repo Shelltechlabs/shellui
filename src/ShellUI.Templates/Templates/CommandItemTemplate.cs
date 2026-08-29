@@ -1,0 +1,65 @@
+using ShellUI.Core.Models;
+
+namespace ShellUI.Templates.Templates;
+
+public class CommandItemTemplate
+{
+    public static ComponentMetadata Metadata => new()
+    {
+        Name = "command-item",
+        DisplayName = "Command Item",
+        Description = "Selectable item for the compositional Command pattern (filter-aware)",
+        Category = ComponentCategory.Overlay,
+        FilePath = "CommandItem.razor",
+        IsAvailable = false,
+        Dependencies = new List<string>(),
+        Tags = new List<string> { "overlay", "command", "item" }
+    };
+
+    public static string Content => @"@namespace YourProjectNamespace.Components.UI
+@implements IDisposable
+
+@if (IsVisible)
+{
+    <div role=""option""
+         tabindex=""0""
+         @onclick=""HandleClick""
+         @onkeydown=""HandleKeyDown""
+         class=""@Shell.Cn(""relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"", Class)""
+         @attributes=""AdditionalAttributes"">
+        @ChildContent
+    </div>
+}
+
+@code {
+    [CascadingParameter] private Command? Parent { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback OnSelect { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private bool IsVisible => Parent == null || Parent.Matches(Value);
+
+    protected override void OnInitialized()
+    {
+        if (Parent != null) Parent.FilterChanged += OnFilterChanged;
+    }
+
+    private void OnFilterChanged() => InvokeAsync(StateHasChanged);
+
+    private async Task HandleClick() => await OnSelect.InvokeAsync();
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == ""Enter"" || e.Key == "" "") await OnSelect.InvokeAsync();
+    }
+
+    public void Dispose()
+    {
+        if (Parent != null) Parent.FilterChanged -= OnFilterChanged;
+    }
+}
+";
+}

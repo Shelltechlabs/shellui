@@ -11,7 +11,7 @@ public static class CommandPaletteTemplate
         Description = "Cmd+K palette wrapper — binds a global hotkey to open a Command",
         Category = ComponentCategory.Overlay,
         FilePath = "CommandPalette.razor",
-        Dependencies = new List<string> { "command", "shellui-js" }
+        Dependencies = new List<string> { "command", "command-models", "shellui-js" }
     };
 
     public static string Content => @"@namespace YourProjectNamespace.Components.UI
@@ -26,8 +26,8 @@ public static class CommandPaletteTemplate
          Placeholder=""@Placeholder"" />
 
 @code {
-    [Parameter] public List<CommandItem> Commands { get; set; } = new();
-    [Parameter] public EventCallback<CommandItem> CommandSelected { get; set; }
+    [Parameter] public List<Models.CommandItem> Commands { get; set; } = new();
+    [Parameter] public EventCallback<Models.CommandItem> CommandSelected { get; set; }
     [Parameter] public string Placeholder { get; set; } = ""Type a command or search..."";
 
     [Parameter] public string HotkeyChar { get; set; } = ""k"";
@@ -65,7 +65,7 @@ public static class CommandPaletteTemplate
         return Task.CompletedTask;
     }
 
-    private async Task OnCommandSelected(CommandItem item)
+    private async Task OnCommandSelected(Models.CommandItem item)
     {
         await CommandSelected.InvokeAsync(item);
     }

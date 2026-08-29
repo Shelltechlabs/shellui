@@ -1,0 +1,29 @@
+@namespace ShellUI.Components
+@typeparam TValue
+
+<CascadingValue Value="this" IsFixed="true">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public System.Linq.Expressions.Expression<Func<TValue>>? For { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    // Resolves the bound field's identifier for FormLabel + FormMessage, either from the
+    // ValueExpression (For) or the explicit Name string.
+    public string? FieldName
+    {
+        get
+        {
+            if (For != null)
+            {
+                var fi = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(For);
+                return fi.FieldName;
+            }
+            return Name;
+        }
+    }
+
+    public System.Linq.Expressions.Expression<Func<TValue>>? Expression => For;
+}

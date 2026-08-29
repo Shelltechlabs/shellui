@@ -39,8 +39,8 @@
         _ => "top-full left-0 mt-2"
     };
 
-    public async Task ToggleAsync() { IsOpen = !IsOpen; await IsOpenChanged.InvokeAsync(IsOpen); }
-    public async Task CloseAsync() { IsOpen = false; await IsOpenChanged.InvokeAsync(IsOpen); }
+    public async Task ToggleAsync() { IsOpen = !IsOpen; await IsOpenChanged.InvokeAsync(IsOpen); StateHasChanged(); }
+    public async Task CloseAsync() { IsOpen = false; await IsOpenChanged.InvokeAsync(IsOpen); StateHasChanged(); }
     private async Task Toggle() => await ToggleAsync();
     private async Task Close() => await CloseAsync();
 }

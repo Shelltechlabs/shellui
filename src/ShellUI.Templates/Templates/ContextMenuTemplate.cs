@@ -72,6 +72,7 @@ public static class ContextMenuTemplate
             await OnItemSelected.InvokeAsync(item);
             IsOpen = false;
             await IsOpenChanged.InvokeAsync(IsOpen);
+            StateHasChanged();
         }
     }
 }

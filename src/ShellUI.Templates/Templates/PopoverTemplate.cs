@@ -61,12 +61,14 @@ public class PopoverTemplate
     {
         IsOpen = !IsOpen;
         await IsOpenChanged.InvokeAsync(IsOpen);
+        StateHasChanged();
     }
-    
+
     private async Task Close()
     {
         IsOpen = false;
         await IsOpenChanged.InvokeAsync(IsOpen);
+        StateHasChanged();
     }
 }
 ";

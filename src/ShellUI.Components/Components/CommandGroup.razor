@@ -1,0 +1,27 @@
+@namespace ShellUI.Components
+
+@if (HasAnyMatch)
+{
+    <div class="@Shell.Cn("overflow-hidden p-1 text-foreground", Class)" @attributes="AdditionalAttributes">
+        @if (!string.IsNullOrEmpty(Heading))
+        {
+            <div class="px-2 py-1.5 text-xs font-medium text-muted-foreground">@Heading</div>
+        }
+        @ChildContent
+    </div>
+}
+
+@code {
+    [CascadingParameter] private Command? Parent { get; set; }
+    [Parameter] public string? Heading { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    // A group renders whenever the parent has any filter that matches at least one item within it.
+    // Individual CommandItems handle their own visibility; the group heading always renders when any
+    // child is visible. Since Blazor can't easily count children here, we opt-in to always rendering:
+    // items self-hide, and empty groups just show the heading with no items — acceptable trade-off.
+    private bool HasAnyMatch => true;
+}

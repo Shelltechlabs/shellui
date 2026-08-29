@@ -8,84 +8,102 @@ public class PaginationTemplate
     {
         Name = "pagination",
         DisplayName = "Pagination",
-        Description = "Pagination component for navigating pages",
+        Description = "Pagination component — auto-generated (TotalPages) or compositional (ChildContent)",
         Category = ComponentCategory.Navigation,
         FilePath = "Pagination.razor",
-
-        Tags = new List<string> { "navigation", "pagination", "pages" }
+        Tags = new List<string> { "navigation", "pagination", "pages" },
+        Dependencies = new List<string>
+        {
+            "pagination-content", "pagination-item", "pagination-link",
+            "pagination-previous", "pagination-next", "pagination-ellipsis"
+        }
     };
 
     public static string Content => @"@namespace YourProjectNamespace.Components.UI
 
-<nav class=""@(""flex items-center justify-center space-x-2 "" + ClassName)"" @attributes=""AdditionalAttributes"">
-    <ul class=""flex items-center space-x-1 overflow-x-auto"">
-        <li>
-            <button type=""button""
-                    @onclick=""Previous""
-                    disabled=""@(CurrentPage <= 1)""
-                    class=""@(""inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring h-9 px-2 sm:px-4 py-2 "" + (CurrentPage <= 1 ? ""opacity-50 cursor-not-allowed"" : ""hover:bg-accent hover:text-accent-foreground""))"">
-                <svg class=""h-4 w-4"" fill=""none"" viewBox=""0 0 24 24"" stroke=""currentColor"">
-                    <path stroke-linecap=""round"" stroke-linejoin=""round"" stroke-width=""2"" d=""M15 19l-7-7 7-7"" />
-                </svg>
-                <span class=""ml-2 hidden sm:inline"">Previous</span>
-            </button>
-        </li>
-        
-        @for (int i = 1; i <= TotalPages; i++)
-        {
-            var pageNum = i;
+<nav role=""navigation"" aria-label=""pagination"" class=""@Shell.Cn(""mx-auto flex w-full justify-center"", ClassName)"" @attributes=""AdditionalAttributes"">
+    @if (ChildContent != null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        <ul class=""flex flex-row items-center gap-1"">
             <li>
                 <button type=""button""
-                        @onclick=""@(() => GoToPage(pageNum))""
-                        class=""@(""inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring h-9 w-9 "" + (CurrentPage == pageNum ? ""border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"" : ""hover:bg-accent hover:text-accent-foreground""))"">
-                    @pageNum
+                        @onclick=""PreviousPage""
+                        disabled=""@(CurrentPage <= 1)""
+                        class=""@Shell.Cn(""inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring h-9 px-4 py-2 gap-1 pl-2.5"", CurrentPage <= 1 ? ""pointer-events-none opacity-50"" : ""hover:bg-accent hover:text-accent-foreground"")"">
+                    <svg class=""h-4 w-4"" fill=""none"" viewBox=""0 0 24 24"" stroke=""currentColor"">
+                        <path stroke-linecap=""round"" stroke-linejoin=""round"" stroke-width=""2"" d=""M15 19l-7-7 7-7"" />
+                    </svg>
+                    <span>Previous</span>
                 </button>
             </li>
-        }
-        
-        <li>
-            <button type=""button""
-                    @onclick=""Next""
-                    disabled=""@(CurrentPage >= TotalPages)""
-                    class=""@(""inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring h-9 px-2 sm:px-4 py-2 "" + (CurrentPage >= TotalPages ? ""opacity-50 cursor-not-allowed"" : ""hover:bg-accent hover:text-accent-foreground""))"">
-                <span class=""mr-2 hidden sm:inline"">Next</span>
-                <svg class=""h-4 w-4"" fill=""none"" viewBox=""0 0 24 24"" stroke=""currentColor"">
-                    <path stroke-linecap=""round"" stroke-linejoin=""round"" stroke-width=""2"" d=""M9 5l7 7-7 7"" />
-                </svg>
-            </button>
-        </li>
-    </ul>
+
+            @for (int i = 1; i <= TotalPages; i++)
+            {
+                var pageNum = i;
+                <li>
+                    <button type=""button""
+                            @onclick=""@(() => GoToPage(pageNum))""
+                            class=""@Shell.Cn(""inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring h-9 w-9"", CurrentPage == pageNum ? ""border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"" : ""hover:bg-accent hover:text-accent-foreground"")"">
+                        @pageNum
+                    </button>
+                </li>
+            }
+
+            <li>
+                <button type=""button""
+                        @onclick=""NextPage""
+                        disabled=""@(CurrentPage >= TotalPages)""
+                        class=""@Shell.Cn(""inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring h-9 px-4 py-2 gap-1 pr-2.5"", CurrentPage >= TotalPages ? ""pointer-events-none opacity-50"" : ""hover:bg-accent hover:text-accent-foreground"")"">
+                    <span>Next</span>
+                    <svg class=""h-4 w-4"" fill=""none"" viewBox=""0 0 24 24"" stroke=""currentColor"">
+                        <path stroke-linecap=""round"" stroke-linejoin=""round"" stroke-width=""2"" d=""M9 5l7 7-7 7"" />
+                    </svg>
+                </button>
+            </li>
+        </ul>
+    }
 </nav>
 
 @code {
-    [Parameter]
-    public int CurrentPage { get; set; } = 1;
-    
-    [Parameter]
-    public int TotalPages { get; set; } = 1;
-    
-    [Parameter]
-    public EventCallback<int> OnPageChange { get; set; }
-    
-    [Parameter]
-    public string ClassName { get; set; } = """";
-    
+    // Legacy auto-generated API
+    [Parameter] public int CurrentPage { get; set; } = 1;
+    [Parameter] public EventCallback<int> CurrentPageChanged { get; set; }
+    [Parameter] public int TotalPages { get; set; } = 1;
+
+    // Compositional API (opt-in by passing ChildContent)
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public string ClassName { get; set; } = """";
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? AdditionalAttributes { get; set; }
-    
+
     private async Task GoToPage(int page)
     {
-        if (page >= 1 && page <= TotalPages && page != CurrentPage)
+        CurrentPage = page;
+        await CurrentPageChanged.InvokeAsync(CurrentPage);
+    }
+
+    private async Task PreviousPage()
+    {
+        if (CurrentPage > 1)
         {
-            CurrentPage = page;
-            await OnPageChange.InvokeAsync(page);
+            CurrentPage--;
+            await CurrentPageChanged.InvokeAsync(CurrentPage);
         }
     }
-    
-    private Task Previous() => GoToPage(CurrentPage - 1);
-    private Task Next() => GoToPage(CurrentPage + 1);
+
+    private async Task NextPage()
+    {
+        if (CurrentPage < TotalPages)
+        {
+            CurrentPage++;
+            await CurrentPageChanged.InvokeAsync(CurrentPage);
+        }
+    }
 }
 ";
 }
-
-

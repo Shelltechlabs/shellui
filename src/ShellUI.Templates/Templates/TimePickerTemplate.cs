@@ -36,21 +36,35 @@ public class TimePickerTemplate
             <div class=""flex gap-2 mb-3"">
                 <div class=""flex-1"">
                     <label class=""text-xs font-medium mb-1 block"">Hour</label>
-                    <select @bind=""selectedHour"" class=""flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"">
-                        @for (int h = 0; h < 24; h++)
-                        {
-                            <option value=""@h"">@h.ToString(""D2"")</option>
-                        }
-                    </select>
+                    <div class=""relative"">
+                        <select @bind=""selectedHour"" class=""flex h-10 w-full appearance-none rounded-md border border-input bg-background pl-3 pr-8 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"">
+                            @for (int h = 0; h < 24; h++)
+                            {
+                                <option value=""@h"">@h.ToString(""D2"")</option>
+                            }
+                        </select>
+                        <div class=""pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"">
+                            <svg class=""h-4 w-4 opacity-50"" fill=""none"" viewBox=""0 0 24 24"" stroke=""currentColor"">
+                                <path stroke-linecap=""round"" stroke-linejoin=""round"" stroke-width=""2"" d=""M19 9l-7 7-7-7"" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
                 <div class=""flex-1"">
                     <label class=""text-xs font-medium mb-1 block"">Minute</label>
-                    <select @bind=""selectedMinute"" class=""flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"">
-                        @for (int m = 0; m < 60; m++)
-                        {
-                            <option value=""@m"">@m.ToString(""D2"")</option>
-                        }
-                    </select>
+                    <div class=""relative"">
+                        <select @bind=""selectedMinute"" class=""flex h-10 w-full appearance-none rounded-md border border-input bg-background pl-3 pr-8 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"">
+                            @for (int m = 0; m < 60; m++)
+                            {
+                                <option value=""@m"">@m.ToString(""D2"")</option>
+                            }
+                        </select>
+                        <div class=""pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"">
+                            <svg class=""h-4 w-4 opacity-50"" fill=""none"" viewBox=""0 0 24 24"" stroke=""currentColor"">
+                                <path stroke-linecap=""round"" stroke-linejoin=""round"" stroke-width=""2"" d=""M19 9l-7 7-7-7"" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
             </div>
             <button type=""button""

@@ -35,6 +35,7 @@ public class CollapsibleTemplate
     {
         IsOpen = !IsOpen;
         await IsOpenChanged.InvokeAsync(IsOpen);
+        StateHasChanged();
     }
 }
 ";
