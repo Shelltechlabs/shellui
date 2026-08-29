@@ -1,5 +1,7 @@
 @namespace BlazorInteractiveServer.Components.Demo
 @using BlazorInteractiveServer.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
 
 <section class="border border-border rounded-lg p-6 bg-card">
     <h2 class="text-2xl font-semibold mb-4 text-card-foreground">Advanced Forms</h2>
@@ -115,24 +117,45 @@
             </div>
         </div>
 
-        <!-- Form Demo -->
+        <!-- Form Demo — EditForm + DataAnnotations + FormMessage for inline errors -->
         <div>
             <h3 class="text-xl font-semibold mb-2 text-card-foreground">Form</h3>
-            <Form OnValidSubmit="HandleFormSubmit" ClassName="space-y-4">
-                <div>
-                    <Label>Name</Label>
-                    <Input Value="@_formName" ValueChanged="@HandleFormNameChanged" Placeholder="Shewart Shepherd" />
-                </div>
-                <div>
-                    <Label>Email</Label>
-                    <Input Value="@_formEmail" ValueChanged="@HandleFormEmailChanged" Type="email" Placeholder="shep@shell-tech.dev" />
-                </div>
-                <div>
-                    <Label>Phone Number</Label>
-                    <Input Value="@_formPhone" ValueChanged="@HandleFormPhoneChanged" Type="tel" Placeholder="+263780000000" />
-                </div>
-                <Button Type="submit">Submit Form</Button>
-            </Form>
+            <p class="text-sm text-muted-foreground mb-3">Uses <code class="text-xs font-mono">EditForm</code> + <code class="text-xs font-mono">DataAnnotationsValidator</code> + the new <code class="text-xs font-mono">FormMessage</code> primitive to show validation errors inline below each field.</p>
+            <EditForm Model="_formModel" OnValidSubmit="HandleFormSubmit" class="space-y-4">
+                <DataAnnotationsValidator />
+
+                <FormField TValue="string" For="@(() => _formModel.Name)">
+                    <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                            <Input @bind-Value="_formModel.Name" Placeholder="Shewart Shepherd" />
+                        </FormControl>
+                        <FormMessage FieldName="Name" />
+                    </FormItem>
+                </FormField>
+
+                <FormField TValue="string" For="@(() => _formModel.Email)">
+                    <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                            <Input @bind-Value="_formModel.Email" Placeholder="shep@shell-tech.dev" />
+                        </FormControl>
+                        <FormMessage FieldName="Email" />
+                    </FormItem>
+                </FormField>
+
+                <FormField TValue="string" For="@(() => _formModel.Phone)">
+                    <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                            <Input @bind-Value="_formModel.Phone" Placeholder="+263780000000" />
+                        </FormControl>
+                        <FormMessage FieldName="Phone" />
+                    </FormItem>
+                </FormField>
+
+                <Button type="submit">Submit Form</Button>
+            </EditForm>
             @if (_formSubmitted)
             {
                 <Alert Variant="@AlertVariant.Success" Title="Success" Class="mt-4">
@@ -283,10 +306,36 @@
 
     private async Task HandleFormSubmit()
     {
+        // Sync validated values back to parent-facing parameters
+        _formName = _formModel.Name;
+        _formEmail = _formModel.Email;
+        _formPhone = _formModel.Phone;
+        await FormNameChanged.InvokeAsync(_formName);
+        await FormEmailChanged.InvokeAsync(_formEmail);
+        await FormPhoneChanged.InvokeAsync(_formPhone);
+
         _formSubmitted = true;
         await FormSubmittedChanged.InvokeAsync(_formSubmitted);
         await Task.Delay(3000);
         _formSubmitted = false;
         await FormSubmittedChanged.InvokeAsync(_formSubmitted);
+    }
+
+    // Validation model — DataAnnotations drive the FormMessage primitives.
+    private FormValidationModel _formModel = new();
+
+    private class FormValidationModel
+    {
+        [Required(ErrorMessage = "Name is required")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "Name must be 2–50 characters")]
+        public string Name { get; set; } = "";
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Enter a valid email address")]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessage = "Phone is required")]
+        [Phone(ErrorMessage = "Enter a valid phone number")]
+        public string Phone { get; set; } = "";
     }
 }

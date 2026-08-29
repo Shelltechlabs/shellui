@@ -399,8 +399,8 @@
             _showCommand = ShowCommand;
         }
     }
-    [Parameter] public List<CommandItem> CommandItems { get; set; } = new();
-    [Parameter] public EventCallback<CommandItem> OnCommandSelected { get; set; }
+    [Parameter] public List<Models.CommandItem> CommandItems { get; set; } = new();
+    [Parameter] public EventCallback<Models.CommandItem> OnCommandSelected { get; set; }
     [Parameter] public List<ContextMenuItem> ContextMenuItems { get; set; } = new();
     [Parameter] public EventCallback<ContextMenuItem> OnContextMenuSelect { get; set; }
     [Parameter] public int CurrentStep { get; set; } = 0;
@@ -437,7 +437,7 @@
         await ShowCommandChanged.InvokeAsync(value);
     }
 
-    private async Task HandleCommandSelected(CommandItem command)
+    private async Task HandleCommandSelected(Models.CommandItem command)
     {
         await OnCommandSelected.InvokeAsync(command);
     }
