@@ -84,6 +84,72 @@ public class NuGetDependenciesTests
     }
 }
 
+public class DependencyGraphTests
+{
+    // Every dependency name declared by any registered component must itself resolve
+    // via ComponentRegistry.GetMetadata. Catches the class of bug where a sub-component
+    // template exists on disk but is never wired into the registry — the CLI then
+    // reports "Failed: <dep-name>" and the consumer project won't compile.
+    [Fact]
+    public void EveryDeclaredDependency_ResolvesInRegistry()
+    {
+        var missing = new List<string>();
+        foreach (var (name, metadata) in ComponentRegistry.Components)
+        {
+            foreach (var dep in metadata.Dependencies)
+            {
+                if (ComponentRegistry.GetMetadata(dep) is null)
+                    missing.Add($"{name} -> {dep}");
+            }
+        }
+        Assert.True(missing.Count == 0,
+            "The following declared dependencies are not registered in ComponentRegistry:\n  " +
+            string.Join("\n  ", missing));
+    }
+
+    // Every installable component (IsAvailable = true) must route through the
+    // GetComponentContent switch. Sub-component stubs registered as IsAvailable = false
+    // with intentionally-empty Content are allowed — they exist only so the CLI can
+    // resolve them as dependency names when the parent renders their markup inline.
+    [Fact]
+    public void EveryInstallableComponent_HasContentMapping()
+    {
+        var missing = new List<string>();
+        foreach (var (name, metadata) in ComponentRegistry.Components)
+        {
+            if (!metadata.IsAvailable) continue;
+            var content = ComponentRegistry.GetComponentContent(name);
+            if (string.IsNullOrWhiteSpace(content))
+                missing.Add(name);
+        }
+        Assert.True(missing.Count == 0,
+            "The following installable components have no content mapping:\n  " +
+            string.Join("\n  ", missing));
+    }
+}
+
+public class HiddenNetworkDependencyTests
+{
+    // ShellUI never ships a <link> to Google Material Symbols and every other component
+    // uses inline SVG for its chrome. If a template renders `material-symbols-outlined`,
+    // the raw icon name ("expand_more", "check", ...) shows as literal text on
+    // consumers. Fail loudly here so the SVG-swap convention stays enforced.
+    [Fact]
+    public void NoTemplate_DependsOnMaterialSymbols()
+    {
+        var offenders = new List<string>();
+        foreach (var (name, _) in ComponentRegistry.Components)
+        {
+            var content = ComponentRegistry.GetComponentContent(name);
+            if (content is not null && content.Contains("material-symbols-outlined"))
+                offenders.Add(name);
+        }
+        Assert.True(offenders.Count == 0,
+            "The following templates reference Material Symbols (not shipped by ShellUI):\n  " +
+            string.Join("\n  ", offenders));
+    }
+}
+
 public class DataTableTemplateContentTests
 {
     // The library-wide convention is `Components.Models` for model namespaces regardless
