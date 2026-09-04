@@ -130,22 +130,32 @@ public class DependencyGraphTests
 
 public class HiddenNetworkDependencyTests
 {
-    // ShellUI never ships a <link> to Google Material Symbols and every other component
-    // uses inline SVG for its chrome. If a template renders `material-symbols-outlined`,
-    // the raw icon name ("expand_more", "check", ...) shows as literal text on
-    // consumers. Fail loudly here so the SVG-swap convention stays enforced.
-    [Fact]
-    public void NoTemplate_DependsOnMaterialSymbols()
+    // ShellUI never links Google Material Symbols/Icons or Font Awesome and every
+    // component uses inline SVG for its chrome. When a template depends on an
+    // external icon font the raw icon name ("expand_more", "cloud_upload", ...)
+    // shows as literal text or the glyph slot renders empty on consumers.
+    // Fail loudly here so the SVG-swap convention stays enforced across the whole
+    // registry — the specific classes below cover both Material families and
+    // Font Awesome's solid/regular/brands.
+    [Theory]
+    [InlineData("material-symbols-outlined")]   // Material Symbols (newer variable font)
+    [InlineData("material-symbols-rounded")]
+    [InlineData("material-symbols-sharp")]
+    [InlineData("material-icons")]              // Material Icons (older static font)
+    [InlineData("fa-solid")]                    // Font Awesome v6+
+    [InlineData("fa-regular")]
+    [InlineData("fa-brands")]
+    public void NoTemplate_DependsOnExternalIconFont(string cssClass)
     {
         var offenders = new List<string>();
         foreach (var (name, _) in ComponentRegistry.Components)
         {
             var content = ComponentRegistry.GetComponentContent(name);
-            if (content is not null && content.Contains("material-symbols-outlined"))
+            if (content is not null && content.Contains(cssClass))
                 offenders.Add(name);
         }
         Assert.True(offenders.Count == 0,
-            "The following templates reference Material Symbols (not shipped by ShellUI):\n  " +
+            $"The following templates reference `{cssClass}` (external icon font, not shipped by ShellUI):\n  " +
             string.Join("\n  ", offenders));
     }
 }
