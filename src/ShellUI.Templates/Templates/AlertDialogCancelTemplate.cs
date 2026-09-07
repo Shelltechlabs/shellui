@@ -18,7 +18,7 @@ public class AlertDialogCancelTemplate
 
     public static string Content => @"@namespace YourProjectNamespace.Components.UI
 
-<Button Variant=""@ButtonVariant.Outline"" Class=""@Shell.Cn(""mt-2 sm:mt-0"", Class)"" @onclick=""HandleClick"" @attributes=""AdditionalAttributes"">
+<Button Variant=""@ButtonVariant.Outline"" Class=""@Class"" @onclick=""HandleClick"" @attributes=""AdditionalAttributes"">
     @ChildContent
 </Button>
 

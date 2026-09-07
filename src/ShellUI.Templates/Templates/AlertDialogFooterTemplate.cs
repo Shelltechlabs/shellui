@@ -18,7 +18,7 @@ public class AlertDialogFooterTemplate
 
     public static string Content => @"@namespace YourProjectNamespace.Components.UI
 
-<div class=""@Shell.Cn(""flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2"", Class)"" @attributes=""AdditionalAttributes"">
+<div class=""@Shell.Cn(""flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-end"", Class)"" @attributes=""AdditionalAttributes"">
     @ChildContent
 </div>
 
